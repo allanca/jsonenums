@@ -9,16 +9,14 @@ package parser
 import (
 	"fmt"
 	"go/ast"
+	"go/constant"
 	"go/build"
 	"go/parser"
 	"go/token"
+	"go/types"
 	"log"
 	"path/filepath"
 	"strings"
-
-	"golang.org/x/tools/go/exact"
-	_ "golang.org/x/tools/go/gcimporter"
-	"golang.org/x/tools/go/types"
 )
 
 // A Package contains all the information related to a parsed package.
@@ -150,7 +148,7 @@ func (pkg *Package) valuesOfTypeIn(typeName string, decl *ast.GenDecl) ([]string
 				return nil, fmt.Errorf("can't handle non-integer constant type %s", typ)
 			}
 			value := obj.(*types.Const).Val() // Guaranteed to succeed as this is CONST.
-			if value.Kind() != exact.Int {
+			if value.Kind() != constant.Int {
 				log.Fatalf("can't happen: constant is not an integer %s", name)
 			}
 			values = append(values, name.Name)
